@@ -1,0 +1,89 @@
+body {
+    background: linear-gradient(135deg, #001026 0%, #00040a 100%);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+}
+
+header { padding: 20px 50px; }
+.logo { color: #00d1ff; cursor: pointer; }
+
+.checkout-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 40px auto;
+    gap: 40px;
+    padding: 0 20px;
+}
+
+.summary-section { flex: 2; }
+.payment-section { flex: 1; }
+
+.checkout-item {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    align-items: center;
+    gap: 20px;
+}
+
+.checkout-item img { width: 100px; border-radius: 4px; }
+
+.payment-card {
+    background: #001a33;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #00d1ff44;
+}
+
+.price-summary .row {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.total { font-weight: bold; font-size: 1.2em; color: #00d1ff; }
+
+.btn-confirm {
+    width: 100%;
+    padding: 15px;
+    background: #00d1ff;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-confirm:hover { background: #00ace6; }
+
+.btn-checkout {
+    width: 100%;
+    padding: 18px;
+    background: #00d1ff; /* Warna khas Enjambre */
+    color: black;
+    border: none;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 20px;
+    letter-spacing: 1px;
+}
+
+.btn-checkout:hover {
+    background: #00ace6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 209, 255, 0.3);
+}
+
+.btn-checkout:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}

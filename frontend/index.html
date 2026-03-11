@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnjambreStore - PlayStation Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="login-screen" class="login-container">
+        <h1>EnjambreStore</h1>
+        <p>Login to access your library</p>
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="handleLogin()">Login</button>
+            <div class="simulation-hint">
+                <button onclick="toggleKey()" class="btn-hint">Show My Key</button>
+                <p id="key-info" style="display: none; margin-top: 10px; font-size: 12px; color: #aaa;">
+                    User: hitlerkusuma | Pass: zivelamunich
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        
+       <header>
+    <div class="nav-left">
+        <h2 class="logo" onclick="showStore()" style="color: #00d1ff; margin-right: 20px; cursor:pointer;">Enjambre</h2>
+        <nav class="main-nav">
+            <span id="nav-store" class="active" onclick="showStore()">Store</span>
+            <span id="nav-library" onclick="location.href='library.html'">Library</span>
+        </nav>
+    </div>
+
+    <div class="nav-right">
+        <div class="nav-item" onclick="showCart()">
+
+<div class="nav-item" onclick="location.href='cart.html'">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" class="badge">0</span>
+</div>
+
+        <div class="nav-item user-profile">
+            <img src="https://i.pravatar.cc/150?u=bex" class="avatar">
+            <span id="user-name-display" style="font-weight: 500;">Bex Small</span>
+        </div>
+
+        <button onclick="handleLogout()" class="btn-logout">Logout</button>
+    </div>
+</header>
+
+        <main>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search games..." onkeyup="filterGames()">
+            </div>
+            <h2 class="section-title">Semua Game</h2>
+            <div id="game-list" class="game-grid"></div>
+        </main>
+    </div>
+
+    <div id="library-screen" style="display: none;" class="main-container">
+        <h2 class="section-title" style="padding: 20px 40px;">My Collection</h2>
+        <div id="library-list" class="game-grid" style="padding: 0 40px;">
+            </div>
+    </div>
+
+    <div id="game-detail-screen" style="display: none;" class="detail-container">
+        <button onclick="closeDetail()" class="btn-back">← Back to Store</button>
+        <div id="detail-content"></div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

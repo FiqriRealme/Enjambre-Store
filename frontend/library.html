@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - EnjambreStore</title>
+    <link rel="stylesheet" href="library-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="library-layout">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h2 onclick="location.href='index.html'" style="cursor:pointer">Enjambre</h2>
+            </div>
+            <nav class="side-nav">
+                <div class="nav-group">
+                    <a href="index.html"><i class="fas fa-store"></i> Store</a>
+                    <a href="library.html" class="active"><i class="fas fa-th-large"></i> Library</a>
+                    <a href="#"><i class="fas fa-unreal-engine"></i> Enjambre Engine</a>
+                </div>
+                
+                <div class="quick-launch">
+                    <p class="section-label">QUICK LAUNCH</p>
+                    <div id="ql-container"></div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-area">
+            <header class="content-header">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="lib-search" placeholder="Search library..." onkeyup="searchLibrary()">
+                </div>
+                <div class="header-icons">
+                    <div class="cart-icon" onclick="location.href='index.html'" style="position: relative; cursor:pointer;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+
+            <section class="library-container">
+                <div class="library-title-bar">
+                    <h1>Library</h1>
+                    <div class="filters">
+                        <span class="active">All</span>
+                        <span>Favorites</span>
+                    </div>
+                </div>
+
+                <div class="sort-bar">
+                    <p>Sort by: <strong>Recently Purchased</strong></p>
+                    <div class="view-options">
+                        <i class="fas fa-th active"></i>
+                        <i class="fas fa-list"></i>
+                    </div>
+                </div>
+
+                <div id="library-grid" class="game-grid">
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="library-logic.js"></script>
+</body>
+</html>

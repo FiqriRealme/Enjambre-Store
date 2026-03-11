@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - Enjambre</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="cart-style.css">
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <h2 class="logo" onclick="location.href='index.html'">Enjambre</h2>
+        </div>
+        <div class="nav-right">
+            <div class="nav-item user-profile">
+                <img src="https://i.pravatar.cc/150?u=hitler" class="avatar">
+                <span>hitlerkusuma</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-container">
+        <h1 class="page-title">My Cart</h1>
+        
+        <div class="cart-layout">
+            <section class="cart-items" id="cart-items-list">
+                </section>
+
+            <aside class="cart-summary">
+                <h3>Games and Apps Summary</h3>
+                <div class="summary-details">
+                    <div class="summary-row">
+                        <span>Price</span>
+                        <span id="subtotal-price">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxes</span>
+                        <span>Calculated at Checkout</span>
+                    </div>
+                    <hr>
+                    <div class="summary-row total">
+                        <span>Subtotal</span>
+                        <span id="total-price-final">Rp 0</span>
+                    </div>
+                </div>
+                <button class="btn-checkout" onclick="processCheckout()">CHECKOUT</button>
+            </aside>
+        </div>
+    </main>
+
+    <script src="cart-logic.js"></script>
+</body>
+</html>
