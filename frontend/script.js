@@ -32,7 +32,6 @@ async function handleLogin() {
         if (response.ok) {
             const result = await response.json();
             
-            // Simpan ke LocalStorage agar tidak hilang saat refresh
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('enjambre_token', result.token);
             localStorage.setItem('enjambre_user', userVal);
