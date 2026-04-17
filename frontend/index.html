@@ -15,10 +15,13 @@
             <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password">
             <button onclick="handleLogin()">Login</button>
+            <div id="google-login-section" class="google-login-section">
+                <div id="google-login-button"></div>
+            </div>
             <div class="simulation-hint">
                 <button onclick="toggleKey()" class="btn-hint">Show My Key</button>
                 <p id="key-info" style="display: none; margin-top: 10px; font-size: 12px; color: #aaa;">
-                    User: hitlerkusuma | Pass: zivelamunich
+                 
                 </p>
             </div>
         </div>
@@ -43,8 +46,8 @@
     <span id="cart-count" class="badge">0</span>
 </div>
 
-        <div class="nav-item user-profile">
-            <img src="https://i.pravatar.cc/150?u=bex" class="avatar">
+        <div id="user-profile-trigger" class="nav-item user-profile">
+            <img id="user-avatar" src="https://i.pravatar.cc/150?u=bex" class="avatar">
             <span id="user-name-display" style="font-weight: 500;">Bex Small</span>
         </div>
 
@@ -74,6 +77,32 @@
 
     <div id="notification-container"></div>
 
+    <div id="profile-setup-overlay" class="profile-setup-overlay">
+        <div class="profile-setup-modal">
+            <div class="profile-setup-header">
+                <h3>Lengkapi Profil</h3>
+                <p>Tambahkan nama dan foto profil agar akun baru kamu terlihat lebih personal.</p>
+            </div>
+
+            <div class="profile-avatar-section">
+                <img id="profile-preview-avatar" src="https://i.pravatar.cc/150?u=bex" alt="Profile Preview" class="profile-preview-avatar">
+                <label class="profile-upload-btn" for="profile-photo-input">Pilih Foto Lokal</label>
+                <input id="profile-photo-input" type="file" accept="image/*" hidden>
+            </div>
+
+            <div class="profile-form-section">
+                <label for="profile-display-name">Nama Profil</label>
+                <input id="profile-display-name" type="text" placeholder="Masukkan nama profil kamu">
+            </div>
+
+            <div class="profile-action-row">
+                <button id="profile-skip-btn" type="button" class="profile-secondary-btn" onclick="closeProfileSetup()">Lewati</button>
+                <button type="button" class="profile-primary-btn" onclick="saveProfileSetup()">Simpan Profil</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="script.js"></script>
 </body>
 </html>

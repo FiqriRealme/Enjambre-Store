@@ -19,6 +19,17 @@ header { padding: 20px 50px; }
 .summary-section { flex: 2; }
 .payment-section { flex: 1; }
 
+.checkout-notice {
+    margin: 16px 0 20px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(255, 209, 102, 0.08);
+    border: 1px solid rgba(255, 209, 102, 0.18);
+    color: #ffe2a8;
+    line-height: 1.5;
+    display: none;
+}
+
 .checkout-item {
     display: flex;
     background: rgba(255, 255, 255, 0.05);
@@ -27,6 +38,19 @@ header { padding: 20px 50px; }
     border-radius: 8px;
     align-items: center;
     gap: 20px;
+}
+
+.checkout-item.owned-item {
+    border: 1px solid rgba(255, 209, 102, 0.18);
+    background: rgba(255, 209, 102, 0.06);
+}
+
+.checkout-item-status {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 .checkout-item img { width: 100px; border-radius: 4px; }

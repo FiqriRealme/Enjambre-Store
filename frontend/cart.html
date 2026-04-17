@@ -10,18 +10,37 @@
 <body>
     <header>
         <div class="nav-left">
-            <h2 class="logo" onclick="location.href='index.html'">Enjambre</h2>
+            <div class="brand-block" onclick="location.href='index.html'">
+                <h2 class="logo">Enjambre</h2>
+                <p class="brand-subtitle">Secure checkout for your collection</p>
+            </div>
         </div>
         <div class="nav-right">
+            <button class="nav-link-btn" onclick="location.href='index.html'">
+                <i class="fas fa-store"></i>
+                <span>Store</span>
+            </button>
             <div class="nav-item user-profile">
-                <img src="https://i.pravatar.cc/150?u=hitler" class="avatar">
-                <span>hitlerkusuma</span>
+                <img id="cart-user-avatar" src="https://i.pravatar.cc/150?u=bex" class="avatar" alt="User Avatar">
+                <div class="user-meta">
+                    <span id="cart-user-name" class="user-name">Player One</span>
+                    <span id="cart-user-email" class="user-email">Signed in player</span>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="cart-container">
-        <h1 class="page-title">My Cart</h1>
+        <div class="page-heading">
+            <div>
+                <p class="eyebrow">Checkout</p>
+                <h1 class="page-title">My Cart</h1>
+            </div>
+            <div class="cart-status-pill">
+                <i class="fas fa-shield-alt"></i>
+                <span>Your account and items are ready to review</span>
+            </div>
+        </div>
         
         <div class="cart-layout">
             <section class="cart-items" id="cart-items-list">

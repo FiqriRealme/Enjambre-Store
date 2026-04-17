@@ -1,82 +1,334 @@
 const express = require('express');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const { OAuth2Client } = require('google-auth-library');
+const db = require('./db');
+const games = require('./game-catalog.json');
 require('dotenv').config();
 
 const app = express();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-const hash = bcrypt.hashSync("zivelamunich", 10);
-let users = [{ username: "hitlerkusuma", password: hash }]; 
-
-let games = [
-    { id: 1, title: "The Last of Us Part II", 
-        price: 800000, genre: "Action", 
-        image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1888510/header.jpg",
-        gameplayScreenshots: [
-            "https://images.unsplash.com/photo-1581093122177-380d603a11f2?q=80&w=600",
-            "https://images.unsplash.com/photo-1581093121966-51e0892095f3?q=80&w=600",
-            "https://images.unsplash.com/photo-1581093122177-380d603a11f2?q=80&w=600",
-            "https://images.unsplash.com/photo-1581093121966-51e0892095f3?q=80&w=600"
-        ]
-
+const createAppToken = (user) => jwt.sign(
+    {
+        id: user.id,
+        username: user.username,
+        role: user.role
     },
-    { id: 2, title: "Spider-Man Miles Morales", price: 729000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1817190/header.jpg" },
-    { id: 3, title: "Elden Ring", price: 599000, genre: "RPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg" },
-    { id: 4, title: "Cyberpunk 2077", price: 699999, genre: "Open World", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg" },
-    { id: 5, title: "God of War Ragnarok", price: 879000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2322010/header.jpg" },
-    { id: 6, title: "Red Dead Redemption 2", price: 640000, genre: "Adventure", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg" },
-    { id: 7, title: "Resident Evil 4 Remake", price: 830000, genre: "Horror", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2050650/header.jpg" },
-    { id: 8, title: "Hogwarts Legacy", price: 799000, genre: "Fantasy", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1559650/header.jpg" },
-    { id: 9, title: "Baldur's Gate 3", price: 699000, genre: "RPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg" },
-    { id: 10, title: "Ghost of Tsushima", price: 879000, genre: "Open World", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg" },
-    { id: 11, title: "Grand Theft Auto V", price: 400000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg" },
-    { id: 12, title: "Final Fantasy VII Rebirth", price: 900000, genre: "RPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg" },
-    { id: 13, title: "Sekiro: Shadows Die Twice", price: 890000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/814380/header.jpg" },
-    { id: 14, title: "Forza Horizon 5", price: 699000, genre: "Racing", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1551360/header.jpg" },
-    { id: 15, title: "Dying Light 2", price: 849000, genre: "Zombies", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/534380/header.jpg" },
-    { id: 16, title: "Stardew Valley", price: 115999, genre: "Simulator", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg" },
-    { id: 17, title: "Black Myth: Wukong", price: 699000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg" },
-    { id: 18, title: "Street Fighter 6", price: 830999, genre: "Fighting", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1364780/header.jpg" },
-    { id: 19, title: "Tekken 8", price: 999000, genre: "Fighting", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1778820/header.jpg" },
-    { id: 20, title: "Monster Hunter Wilds", price: 899000, genre: "RPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2246340/header.jpg" },
-    { id: 21, title: "The Witcher 3: Wild Hunt", price: 360000, genre: "RPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg" },
-    { id: 22, title: "Horizon Zero Dawn", price: 729000, genre: "Open World", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1151640/header.jpg" },
-    { id: 23, title: "Call of Duty: Black Ops 6", price: 1000000, genre: "FPS", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2933620/header.jpg" },
-    { id: 24, title: "Minecraft Dungeons", price: 280000, genre: "Adventure", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1672970/header.jpg" },
-    { id: 25, title: "Assassin's Creed Mirage", price: 589000, genre: "Stealth", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2892180/header.jpg" },
-    { id: 26, title: "Starfield", price: 1000000, genre: "Sci-Fi", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1716740/header.jpg" },
-    { id: 27, title: "EA SPORTS FC 25", price: 759000, genre: "Sports", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2669320/header.jpg" },
-    { id: 28, title: "Persona 5 Royal", price: 798000, genre: "JRPG", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1687950/header.jpg" },
-    { id: 29, title: "Dark Souls III", price: 587000, genre: "Action", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/374320/header.jpg" },
-    { id: 30, title: "Terraria", price: 90000, genre: "Sandbox", image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/header.jpg" }
-];
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+);
 
+const buildUsernameFromEmail = (email) => {
+    if (!email || !email.includes('@')) return 'google_user';
+    return email.split('@')[0];
+};
+
+const findAvailableUsername = (baseUsername, callback) => {
+    db.query(
+        'SELECT username FROM users WHERE username LIKE ?',
+        [`${baseUsername}%`],
+        (err, result) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            const usedNames = new Set(result.map((item) => item.username));
+
+            if (!usedNames.has(baseUsername)) {
+                callback(null, baseUsername);
+                return;
+            }
+
+            let counter = 1;
+            let candidate = `${baseUsername}${counter}`;
+
+            while (usedNames.has(candidate)) {
+                counter += 1;
+                candidate = `${baseUsername}${counter}`;
+            }
+
+            callback(null, candidate);
+        }
+    );
+};
+
+/* ===============================
+   AUTH MIDDLEWARE
+================================= */
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.sendStatus(401);
+
+    if (!token) {
+        return res.status(401).json({
+            message: 'Unauthorized'
+        });
+    }
+
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) {
+            return res.status(403).json({
+                message: 'Token invalid'
+            });
+        }
+
         req.user = user;
         next();
     });
 };
 
-app.post('/api/login', async (req, res) => {
-    const user = users.find(u => u.username === req.body.username);
-    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-        return res.status(401).send();
+/* ===============================
+   ADMIN MIDDLEWARE
+================================= */
+const adminMiddleware = (req, res, next) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({
+            message: 'Forbidden: Admin only'
+        });
     }
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+
+    next();
+};
+
+/* ===============================
+   REGISTER USER
+================================= */
+app.post('/api/register', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.query(
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        [username, email, hashedPassword],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Register gagal',
+                    error: err.message
+                });
+            }
+
+            res.json({
+                message: 'Register berhasil'
+            });
+        }
+    );
 });
 
+/* ===============================
+   REGISTER ADMIN
+================================= */
+app.post('/api/register-admin', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.query(
+        'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+        [username, email, hashedPassword, 'admin'],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Gagal membuat admin',
+                    error: err.message
+                });
+            }
+
+            res.json({
+                message: 'Admin berhasil dibuat'
+            });
+        }
+    );
+});
+
+/* ===============================
+   LOGIN DATABASE
+================================= */
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+
+    db.query(
+        'SELECT * FROM users WHERE username = ?',
+        [username],
+        async (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Server error'
+                });
+            }
+
+            if (result.length === 0) {
+                return res.status(401).json({
+                    message: 'User tidak ditemukan'
+                });
+            }
+
+            const user = result[0];
+
+            const validPassword = await bcrypt.compare(password, user.password);
+
+            if (!validPassword) {
+                return res.status(401).json({
+                    message: 'Password salah'
+                });
+            }
+
+            const token = createAppToken(user);
+
+            res.json({
+                message: 'Login berhasil',
+                token
+            });
+        }
+    );
+});
+
+app.get('/api/auth/google/config', (req, res) => {
+    res.json({
+        clientId: process.env.GOOGLE_CLIENT_ID || ''
+    });
+});
+
+app.post('/api/auth/google', async (req, res) => {
+    const { credential } = req.body;
+
+    if (!process.env.GOOGLE_CLIENT_ID) {
+        return res.status(500).json({
+            message: 'GOOGLE_CLIENT_ID belum dikonfigurasi'
+        });
+    }
+
+    if (!credential) {
+        return res.status(400).json({
+            message: 'Credential Google wajib diisi'
+        });
+    }
+
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+        const email = payload?.email;
+        const picture = payload?.picture || '';
+
+        if (!email) {
+            return res.status(400).json({
+                message: 'Email Google tidak ditemukan'
+            });
+        }
+
+        const username = buildUsernameFromEmail(email);
+
+        db.query(
+            'SELECT * FROM users WHERE email = ?',
+            [email],
+            (selectErr, result) => {
+                if (selectErr) {
+                    return res.status(500).json({
+                        message: 'Gagal memeriksa user Google'
+                    });
+                }
+
+                if (result.length > 0) {
+                    const existingUser = result[0];
+                    const normalizedUser = {
+                        ...existingUser,
+                        username: existingUser.username || username,
+                        role: existingUser.role || 'user'
+                    };
+
+                    const token = createAppToken(normalizedUser);
+
+                    return res.json({
+                        message: 'Login Google berhasil',
+                        token,
+                        username: normalizedUser.username,
+                        email,
+                        picture,
+                        isNewUser: false
+                    });
+                }
+
+                findAvailableUsername(username, (usernameErr, availableUsername) => {
+                    if (usernameErr) {
+                        return res.status(500).json({
+                            message: 'Gagal menyiapkan username user Google'
+                        });
+                    }
+
+                    db.query(
+                        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+                        [availableUsername, email, 'GOOGLE_AUTH'],
+                        (insertErr, insertResult) => {
+                            if (insertErr) {
+                                return res.status(500).json({
+                                    message: 'Gagal membuat user Google',
+                                    error: insertErr.message
+                                });
+                            }
+
+                            const newUser = {
+                                id: insertResult.insertId,
+                                username: availableUsername,
+                                role: 'user'
+                            };
+
+                            const token = createAppToken(newUser);
+
+                            return res.json({
+                                message: 'Login Google berhasil',
+                                token,
+                                username: availableUsername,
+                                email,
+                                picture,
+                                isNewUser: true
+                            });
+                        }
+                    );
+                });
+            }
+        );
+    } catch (error) {
+        return res.status(401).json({
+            message: 'Token Google tidak valid',
+            error: error.message
+        });
+    }
+});
+
+/* ===============================
+   ADMIN ROUTE
+================================= */
+app.get('/api/admin', authenticateToken, adminMiddleware, (req, res) => {
+    res.json({
+        message: 'Welcome Admin'
+    });
+});
+
+/* ===============================
+   GAMES ROUTE
+================================= */
 app.get('/api/games', authenticateToken, (req, res) => {
     res.json(games);
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+/* ===============================
+   START SERVER
+================================= */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Active on ${PORT}`));
